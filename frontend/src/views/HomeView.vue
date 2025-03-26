@@ -18,7 +18,7 @@
     </div>
 
     <TodoList 
-      :todos="todos" 
+      :todos="todos.reverse()" 
       :loading="loading"
       :filter="statusFilter"
       @view="id => router.push(`/todos/${id}`)"
