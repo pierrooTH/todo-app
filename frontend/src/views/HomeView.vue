@@ -18,7 +18,7 @@
     </div>
 
     <TodoList 
-      :todos="todos.reverse()" 
+      :todos="reversedTodos" 
       :loading="loading"
       :filter="statusFilter"
       @view="id => router.push(`/todos/${id}`)"
@@ -53,7 +53,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import TodoList from '../components/TodoList.vue';
 import TodoFilter from '../components/TodoFilter.vue';
@@ -67,6 +67,8 @@ const statusFilter = ref('all');
 const showDeleteModal = ref(false);
 const todoToDelete = ref<string | null>(null);
 const deleteLoading = ref(false);
+
+const reversedTodos = computed(() => [...todos.value].reverse());
 
 const fetchTodos = async () => {
   loading.value = true;

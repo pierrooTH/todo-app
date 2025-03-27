@@ -33,7 +33,7 @@
     
     const selected = computed(() => props.modelValue);
     
-    function updateFilter(value: string) {
+    function  updateFilter(value: string) {
       emit('update:modelValue', value);
     }
 
