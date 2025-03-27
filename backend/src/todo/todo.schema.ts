@@ -13,6 +13,7 @@ export class Todo {
 
   @Prop({ enum: ['à faire', 'en cours', 'terminée'], default: 'à faire' })
   status: string;
+  id: any;
 }
 
 export const TodoSchema = SchemaFactory.createForClass(Todo);

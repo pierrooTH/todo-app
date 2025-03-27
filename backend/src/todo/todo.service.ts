@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Todo, TodoDocument } from './todo.schema';
@@ -10,12 +10,7 @@ export class TodoService {
   constructor(@InjectModel(Todo.name) private todoModel: Model<TodoDocument>) {}
 
   async create(createTodoDto: CreateTodoDto): Promise<Todo> {
-    const newTodo = new this.todoModel({
-      title: createTodoDto.title,
-      description: createTodoDto.description || '',
-      status: createTodoDto.status || 'à faire',
-    });
-    return newTodo.save();
+    return this.todoModel.create(createTodoDto);
   }
 
   async findAll(): Promise<Todo[]> {
@@ -23,16 +18,24 @@ export class TodoService {
   }
 
   async findOne(id: string): Promise<Todo> {
-    return this.todoModel.findById(id).exec();
+    const todo = await this.todoModel.findById(id);
+    if (!todo) throw new NotFoundException('Todo not found');
+    return todo;
   }
 
   async update(id: string, updateTodoDto: UpdateTodoDto): Promise<Todo> {
-    return this.todoModel
-      .findByIdAndUpdate(id, updateTodoDto, { new: true })
-      .exec();
+    const updatedTodo = await this.todoModel.findByIdAndUpdate(
+      id,
+      updateTodoDto,
+      { new: true },
+    );
+    if (!updatedTodo) throw new NotFoundException('Todo not found');
+    return updatedTodo;
   }
 
   async remove(id: string): Promise<Todo> {
-    return this.todoModel.findByIdAndDelete(id).exec();
+    const deletedTodo = await this.todoModel.findByIdAndDelete(id);
+    if (!deletedTodo) throw new NotFoundException('Todo not found');
+    return deletedTodo;
   }
 }
